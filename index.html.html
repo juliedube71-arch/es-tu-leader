@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Leadership</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --plum:#3D1A6E; --violet:#6B3FA0; --lila:#9B6DBF;
+  --peach:#FF8B6B; --ltpeach:#FFD4C4; --cream:#FFF8F4;
+  --muted:#A094B8; --dark:#2A1550; --offwht:#FAF6FF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--offwht);min-height:100vh;overflow-x:hidden;}
+.blob-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.blob{position:absolute;border-radius:50%;animation:floatBlob 8s ease-in-out infinite;}
+.b1{width:380px;height:380px;background:rgba(107,63,160,.18);top:-80px;left:-80px;}
+.b2{width:300px;height:300px;background:rgba(255,139,107,.15);bottom:-60px;right:-60px;animation-delay:-3s;}
+.b3{width:220px;height:220px;background:rgba(155,109,191,.14);top:40%;right:5%;animation-delay:-5s;}
+@keyframes floatBlob{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.app{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.site-header{text-align:center;padding:2.5rem 0 2rem;}
+.hbadge{display:inline-block;background:var(--peach);color:#fff;padding:.3rem 1.2rem;border-radius:50px;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;}
+.site-header h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);color:var(--plum);margin-bottom:.4rem;}
+.site-header p{color:var(--muted);font-size:.95rem;}
+.tabs{display:flex;gap:.75rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap;}
+.tab-btn{padding:.65rem 1.6rem;border-radius:50px;border:2px solid #e0d9f0;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;background:white;color:var(--muted);transition:all .25s;box-shadow:0 2px 12px rgba(61,26,110,.07);}
+.tab-btn.active{background:var(--plum);color:#fff;border-color:var(--plum);box-shadow:0 4px 20px rgba(61,26,110,.25);}
+.tab-btn:hover:not(.active):not(:disabled){border-color:var(--lila);color:var(--violet);}
+.tab-btn:disabled{opacity:.4;cursor:not-allowed;}
+.panel{display:none;}.panel.active{display:block;}
+.intro-card{background:linear-gradient(135deg,var(--plum),var(--violet));border-radius:24px;padding:2rem 2.2rem;margin-bottom:1.8rem;color:#fff;position:relative;overflow:hidden;}
+.intro-card::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);}
+.intro-card .pill{display:inline-block;background:var(--peach);border-radius:50px;padding:.25rem .9rem;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;}
+.intro-card h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:.5rem;}
+.intro-card p{font-size:.93rem;opacity:.85;line-height:1.6;}
+.prog-wrap{margin-bottom:1.5rem;}
+.prog-labels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:.4rem;}
+.prog-track{height:6px;background:#ede8f8;border-radius:50px;}
+.prog-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--violet),var(--peach));transition:width .4s ease;width:0%;}
+.qcard{background:#fff;border-radius:20px;padding:1.8rem 2rem;margin-bottom:1.2rem;box-shadow:0 4px 24px rgba(61,26,110,.07);border:1.5px solid #ede8f8;}
+.qhead{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.2rem;}
+.qnum{min-width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--lila));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;}
+.qtext{font-size:1rem;font-weight:500;color:var(--plum);line-height:1.5;padding-top:.35rem;}
+.scale-opts{display:flex;gap:.5rem;flex-wrap:wrap;}
+.sopt{flex:1;min-width:80px;padding:.55rem .4rem;border-radius:12px;border:2px solid #ede8f8;background:#faf6ff;cursor:pointer;text-align:center;font-size:.78rem;font-weight:500;color:var(--muted);line-height:1.3;transition:all .2s;}
+.sopt:hover{border-color:var(--lila);color:var(--violet);background:#f0e8ff;}
+.sopt.sel{border-color:var(--peach);background:var(--peach);color:#fff;box-shadow:0 3px 12px rgba(255,139,107,.35);}
+.letter-opts{display:flex;flex-direction:column;gap:.6rem;}
+.lopt{display:flex;align-items:center;gap:.9rem;padding:.75rem 1rem;border-radius:14px;border:2px solid #ede8f8;background:#faf6ff;cursor:pointer;transition:all .2s;}
+.lopt:hover{border-color:var(--lila);background:#f0e8ff;}
+.lopt.sel{border-color:var(--violet);background:var(--violet);color:#fff;box-shadow:0 3px 14px rgba(107,63,160,.3);}
+.lbadge{min-width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--lila));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;}
+.lopt.sel .lbadge{background:rgba(255,255,255,.25);}
+.ltext{font-size:.92rem;color:var(--plum);}
+.lopt.sel .ltext{color:#fff;}
+.submit-area{text-align:center;margin:2rem 0 1rem;}
+.btn-submit{background:linear-gradient(135deg,var(--peach),#ff6b3d);color:#fff;border:none;padding:1rem 2.8rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(255,139,107,.4);transition:all .25s;}
+.btn-submit:hover{transform:translateY(-2px);}
+.warn{background:#fff3f0;border:1.5px solid #ffd4c4;color:#c0552a;border-radius:12px;padding:.7rem 1rem;font-size:.88rem;margin-bottom:1rem;display:none;}
+.warn.show{display:block;}
+.result-panel{display:none;animation:fadeUp .5s ease;}
+.result-panel.show{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.ring-wrap{text-align:center;margin-bottom:1.5rem;}
+.ring{width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--peach) 0deg,#ede8f8 0deg);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(255,139,107,.3);}
+.ring-inner{width:110px;height:110px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-pct{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--plum);line-height:1;}
+.ring-lbl{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+.rcard{border-radius:20px;padding:1.6rem 1.8rem;background:linear-gradient(135deg,var(--plum),var(--violet));color:#fff;margin-bottom:1rem;}
+.rcard h3{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:.5rem;}
+.rcard p{opacity:.88;line-height:1.65;font-size:.95rem;}
+.levels-grid{display:flex;flex-direction:column;gap:.7rem;margin-top:1rem;}
+.lvl-card{background:#fff;border-radius:16px;padding:1rem 1.2rem;border:2px solid #ede8f8;display:flex;gap:1rem;align-items:center;transition:all .3s;}
+.lvl-card.active-lvl{border-color:transparent;color:#fff;box-shadow:0 6px 22px rgba(61,26,110,.22);transform:scale(1.02);}
+.lvl-icon{min-width:48px;text-align:center;flex-shrink:0;}
+.lvl-emoji{font-size:1.5rem;margin-bottom:.2rem;}
+.lvl-range{font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.7;}
+.lvl-title{font-weight:700;font-size:.95rem;margin-bottom:.2rem;}
+.lvl-desc{font-size:.85rem;line-height:1.5;opacity:.85;}
+.mine-tag{background:rgba(255,255,255,.25);border-radius:50px;padding:.08rem .55rem;font-size:.7rem;margin-left:.4rem;vertical-align:middle;}
+.style-winner{background:linear-gradient(135deg,var(--plum),var(--violet));border-radius:20px;padding:1.6rem 1.8rem;color:#fff;margin-bottom:1rem;}
+.style-winner .sw-badge{background:var(--peach);border-radius:50px;padding:.25rem .9rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;display:inline-block;margin-bottom:.7rem;}
+.style-winner h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.5rem;}
+.style-winner p{opacity:.88;line-height:1.65;}
+.bars{margin:1.5rem 0;}
+.bar-row{margin-bottom:.9rem;}
+.bar-lbl{display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;color:var(--plum);margin-bottom:.3rem;}
+.bar-track{height:11px;background:#ede8f8;border-radius:50px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:50px;width:0%;transition:width 1s cubic-bezier(.34,1.56,.64,1);}
+.sdesc-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.5rem;}
+@media(max-width:520px){.sdesc-grid{grid-template-columns:1fr;}}
+.sdesc-card{background:#fff;border-radius:14px;padding:1rem 1.1rem;border:1.5px solid #ede8f8;}
+.sdesc-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem;}
+.sdesc-dot{width:10px;height:10px;border-radius:50%;}
+.sdesc-title{font-weight:700;font-size:.88rem;color:var(--plum);}
+.sdesc-body{font-size:.82rem;color:var(--muted);line-height:1.5;}
+.btn-reset{background:#fff;color:var(--violet);border:2px solid var(--lila);padding:.75rem 2rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:.5rem;}
+.btn-reset:hover{background:var(--violet);color:#fff;border-color:var(--violet);}
+/* PROFIL */
+.profil-duo{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;}
+@media(max-width:520px){.profil-duo{grid-template-columns:1fr;}}
+.pbadge{border-radius:20px;padding:1.3rem 1.4rem;color:#fff;text-align:center;}
+.pbadge-emoji{font-size:2.2rem;margin-bottom:.3rem;}
+.pbadge-lbl{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.72;margin-bottom:.25rem;}
+.pbadge-val{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;}
+.pbadge-sub{font-size:.75rem;opacity:.65;margin-top:.3rem;}
+.pbox{background:#fff;border-radius:20px;padding:1.5rem 1.6rem;border:2px solid var(--lila);box-shadow:0 4px 24px rgba(107,63,160,.1);margin-bottom:1rem;}
+.pbox h3{font-family:'Playfair Display',serif;color:var(--plum);font-size:1.15rem;margin-bottom:.75rem;}
+.pbox p{color:#555;line-height:1.7;font-size:.93rem;margin-bottom:.5rem;}
+.hquote{background:linear-gradient(135deg,var(--plum),var(--violet));border-radius:14px;padding:1.2rem 1.4rem 1.2rem 2rem;color:#fff;font-style:italic;line-height:1.65;margin:.8rem 0;position:relative;}
+.hquote::before{content:'"';font-size:2.8rem;font-family:'Playfair Display',serif;color:rgba(255,255,255,.2);position:absolute;top:-.1rem;left:.8rem;line-height:1;}
+.danger-note{color:var(--lila);font-size:.87rem;}
+.pquestion{background:linear-gradient(135deg,var(--peach),#ff6b3d);border-radius:18px;padding:1.4rem 1.6rem;color:#fff;text-align:center;margin:1rem 0;}
+.pq-lbl{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.8;margin-bottom:.5rem;}
+.pq-txt{font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;line-height:1.5;}
+.tips-list{display:flex;flex-direction:column;gap:.6rem;margin-top:.3rem;}
+.tip{display:flex;gap:.85rem;align-items:flex-start;background:var(--offwht);border-radius:12px;padding:.85rem 1rem;}
+.tip-n{min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--lila));color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;}
+.tip-t{font-size:.9rem;color:#444;line-height:1.5;}
+.ptable{width:100%;border-collapse:collapse;border-radius:14px;overflow:hidden;box-shadow:0 2px 14px rgba(61,26,110,.07);margin-top:.8rem;}
+.ptable th{background:var(--plum);color:#fff;padding:.65rem .9rem;font-size:.8rem;text-align:left;}
+.ptable td{padding:.6rem .9rem;font-size:.82rem;color:#444;border-bottom:1px solid #f0ebff;background:#fff;}
+.ptable tr.arow td{background:linear-gradient(135deg,var(--violet),var(--lila));color:#fff;font-weight:600;}
+.mine-pill{background:rgba(255,255,255,.25);border-radius:50px;padding:.08rem .5rem;font-size:.7rem;margin-left:.4rem;}
+.pfooter{background:linear-gradient(135deg,var(--plum),var(--violet));border-radius:20px;padding:1.5rem 1.8rem;color:#fff;text-align:center;margin-top:1rem;}
+.pfooter .btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;}
+.pfooter .btn-ghost{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;padding:.65rem 1.5rem;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.pfooter .btn-ghost:hover{background:rgba(255,255,255,.28);}
+footer{text-align:center;margin-top:3rem;color:var(--muted);font-size:.82rem;opacity:.7;}
+</style>
+</head>
+<body>
+<div class="blob-bg">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+</div>
+<div class="app">
+  <header class="site-header">
+    <div class="hbadge">Leadership</div>
+    <h1>Quiz Leadership</h1>
+    <p>Découvre ton niveau et ton style — Julie Dubé</p>
+  </header>
+  <nav class="tabs">
+    <button class="tab-btn active" id="tab1" onclick="switchTab(1)">🎯 Quiz 1 — Es-tu leader ?</button>
+    <button class="tab-btn" id="tab2" onclick="switchTab(2)">✨ Quiz 2 — Quel style ?</button>
+    <button class="tab-btn" id="tab3" onclick="switchTab(3)" disabled>🔍 Mon profil complet</button>
+  </nav>
+
+  <!-- QUIZ 1 -->
+  <div class="panel active" id="panel1">
+    <div class="intro-card">
+      <div class="pill">15 questions · 1 à 5 points</div>
+      <h2>Quel est ton niveau de leadership ?</h2>
+      <p>Sélectionne la réponse qui te correspond le mieux pour chaque question.</p>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-labels"><span id="p1txt">0 / 15 réponses</span><span id="p1pct">0%</span></div>
+      <div class="prog-track"><div class="prog-fill" id="p1bar"></div></div>
+    </div>
+    <div id="q1container"></div>
+    <div class="warn" id="w1"></div>
+    <div class="submit-area"><button class="btn-submit" onclick="submitQ1()">Voir mon résultat →</button></div>
+    <div class="result-panel" id="r1">
+      <div class="ring-wrap">
+        <div class="ring" id="ring1"><div class="ring-inner"><div class="ring-pct" id="rpct">0%</div><div class="ring-lbl">score</div></div></div>
+        <p style="margin-top:.6rem;color:var(--muted);font-size:.85rem;" id="rraw"></p>
+      </div>
+      <div class="rcard"><h3 id="rtitle"></h3><p id="rdesc"></p></div>
+      <div style="margin:1.5rem 0 .5rem;">
+        <h4 style="color:var(--plum);font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:.35rem;">📊 Les 4 niveaux de leadership</h4>
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:.8rem;">Situe-toi par rapport à tous les niveaux — le tien est mis en évidence.</p>
+        <div class="levels-grid" id="lvlgrid"></div>
+      </div>
+      <div style="text-align:center"><button class="btn-reset" onclick="resetQ1()">↺ Recommencer</button></div>
+    </div>
+  </div>
+
+  <!-- QUIZ 2 -->
+  <div class="panel" id="panel2">
+    <div class="intro-card">
+      <div class="pill">10 questions · A B C D E</div>
+      <h2>Quel style de leader es-tu ?</h2>
+      <p>Choisis UNE réponse par question — celle qui correspond le plus à ton comportement naturel.</p>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-labels"><span id="p2txt">0 / 10 réponses</span><span id="p2pct">0%</span></div>
+      <div class="prog-track"><div class="prog-fill" id="p2bar"></div></div>
+    </div>
+    <div id="q2container"></div>
+    <div class="warn" id="w2"></div>
+    <div class="submit-area"><button class="btn-submit" onclick="submitQ2()">Révéler mon style →</button></div>
+    <div class="result-panel" id="r2">
+      <div class="style-winner" id="swinner">
+        <div class="sw-badge" id="swbadge"></div>
+        <h3 id="swtitle"></h3>
+        <p id="swdesc"></p>
+      </div>
+      <div class="bars" id="sbars"></div>
+      <h4 style="color:var(--plum);font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:.7rem;">Les 5 styles en détail</h4>
+      <div class="sdesc-grid" id="sdescgrid"></div>
+      <div style="text-align:center"><button class="btn-reset" onclick="resetQ2()">↺ Recommencer</button></div>
+    </div>
+  </div>
+
+  <!-- PROFIL -->
+  <div class="panel" id="panel3">
+    <div class="intro-card" style="background:linear-gradient(135deg,#2A1550,#6B3FA0)">
+      <div class="pill">Analyse personnalisée</div>
+      <h2>Ton profil de leadership complet</h2>
+      <p>Croisement de ton niveau et de ton style — pour comprendre qui tu es vraiment en tant que leader.</p>
+    </div>
+    <div id="profilcontent"></div>
+  </div>
+
+  <footer>Cours de leadership · Technique de l'administration et gestion · Julie Dubé</footer>
+</div>
+
+<script>
+// ── DATA Q1 ──────────────────────────────────────────────
+var Q1 = [
+  {q:"Je prends facilement l'initiative dans un groupe.", o:["Pas du tout","Rarement","Parfois","Souvent","Tout à fait"]},
+  {q:"Je motive les autres à donner le meilleur d'eux-mêmes.", o:["Jamais","Rarement","Occasionnellement","Souvent","Tout le temps"]},
+  {q:"Je suis à l'aise pour prendre des décisions difficiles.", o:["Très mal à l'aise","Plutôt hésitant","Neutre","Assez confiant","Très confiant"]},
+  {q:"Je sais écouter activement les idées des autres.", o:["Non, je parle plus","Rarement","Parfois","Souvent","Oui, systématiquement"]},
+  {q:"En cas de conflit, je joue un rôle de médiateur.", o:["Je les évite","Je laisse les autres","J'interviens parfois","J'essaie souvent","Je résous efficacement"]},
+  {q:"Je fixe des objectifs clairs pour moi et mon équipe.", o:["Non, je préfère improviser","Rarement","De temps en temps","Souvent","Toujours"]},
+  {q:"Je m'adapte facilement aux changements imprévus.", o:["Je déteste l'imprévu","C'est difficile","Avec effort","Assez bien","Très flexible"]},
+  {q:"Les autres me perçoivent comme une personne inspirante.", o:["Pas du tout","Peu","Moyennement","Assez","Beaucoup"]},
+  {q:"Je délègue efficacement les tâches.", o:["Je préfère tout faire","Rarement","Parfois","Souvent","Systématiquement"]},
+  {q:"Je donne et reçois du feedback constructif.", o:["Je n'aime pas critiquer","Rarement","Occasionnellement","Souvent","Toujours"]},
+  {q:"Je reste calme et rationnel sous pression.", o:["Je panique facilement","C'est difficile","Tant bien que mal","Généralement calme","Rien ne me déstabilise"]},
+  {q:"Je crée une vision claire pour guider une équipe.", o:["Non, je préfère suivre","Rarement","Parfois","Souvent","C'est naturel pour moi"]},
+  {q:"Je reconnais et valorise les efforts des autres.", o:["Rarement","Parfois","Assez souvent","Souvent","Tout le temps"]},
+  {q:"Je prends des risques calculés pour atteindre un objectif.", o:["Je n'aime pas les risques","Très rarement","Parfois","Souvent","Oui, si nécessaire"]},
+  {q:"Je me remets en question pour m'améliorer.", o:["Non, je pense bien faire","Rarement","Parfois","Souvent","En permanence"]}
+];
+
+var LEVELS = [
+  {max:40, emoji:"🌱", range:"0–40 %", title:"Leadership en développement", desc:"Peu d'initiative, préfère suivre. Le leadership s'apprend avec la pratique, la curiosité et l'ouverture aux autres.", color:"#9B6DBF"},
+  {max:65, emoji:"🌿", range:"41–65 %", title:"Leadership modéré", desc:"Bon potentiel, mais manque de confiance ou de pratique. Continue à prendre des initiatives !", color:"#6B3FA0"},
+  {max:85, emoji:"🌟", range:"66–85 %", title:"Leader affirmé", desc:"Prise d'initiative, bon communicateur. Continue à développer ta vision et ta flexibilité !", color:"#FF8B6B"},
+  {max:100, emoji:"🚀", range:"86–100 %", title:"Leader fort", desc:"Vision claire, inspire les autres, gère bien les crises. Tu es un véritable moteur pour tes équipes !", color:"#3D1A6E"}
+];
+
+// ── DATA Q2 ──────────────────────────────────────────────
+var Q2 = [
+  {q:"Quand ton équipe est bloquée sur un projet, tu :", o:[
+    {l:"A",t:"Donnes des directives claires pour débloquer rapidement."},
+    {l:"B",t:"Ouvres la discussion pour trouver une solution ensemble."},
+    {l:"C",t:"Encourages à voir plus loin et à dépasser les limites."},
+    {l:"D",t:"Prends le temps de voir comment tu peux les aider."},
+    {l:"E",t:"Les laisses gérer la situation à leur façon."}
+  ]},
+  {q:"Lors d'une réunion, tu es plutôt celui/celle qui :", o:[
+    {l:"A",t:"Structure la discussion et fait respecter l'ordre du jour."},
+    {l:"B",t:"Anime la discussion en laissant tout le monde participer."},
+    {l:"C",t:"Motive l'équipe avec une grande vision."},
+    {l:"D",t:"T'assures que tout le monde se sent entendu et soutenu."},
+    {l:"E",t:"Restes en retrait, en observant le déroulement."}
+  ]},
+  {q:"Face à une urgence, tu préfères :", o:[
+    {l:"A",t:"Agir seul(e) pour régler la situation efficacement."},
+    {l:"B",t:"Réunir l'équipe pour trouver une réponse collective."},
+    {l:"C",t:"Utiliser la crise pour mobiliser l'équipe autour d'un but plus grand."},
+    {l:"D",t:"Voir comment tu peux accompagner chacun dans sa part de tâche."},
+    {l:"E",t:"Laisser l'équipe trouver elle-même la solution."}
+  ]},
+  {q:"Ta plus grande force en leadership, c'est :", o:[
+    {l:"A",t:"L'organisation et l'autorité."},
+    {l:"B",t:"L'écoute et l'équité."},
+    {l:"C",t:"L'inspiration et la vision."},
+    {l:"D",t:"L'empathie et l'humilité."},
+    {l:"E",t:"La liberté et la souplesse."}
+  ]},
+  {q:"Quand tu dois donner du feedback à quelqu'un, tu :", o:[
+    {l:"A",t:"Vas droit au but, même si c'est dur à entendre."},
+    {l:"B",t:"Ouvres la discussion et cherches une solution ensemble."},
+    {l:"C",t:"Reformules de manière inspirante pour motiver."},
+    {l:"D",t:"Choisis tes mots avec douceur pour soutenir la personne."},
+    {l:"E",t:"Évites de trop intervenir, chacun apprend à son rythme."}
+  ]},
+  {q:"Dans une équipe, tu aimes que les gens :", o:[
+    {l:"A",t:"Te suivent avec efficacité."},
+    {l:"B",t:"Participent à la réflexion et à la prise de décision."},
+    {l:"C",t:"Se dépassent pour atteindre un idéal commun."},
+    {l:"D",t:"Se sentent bien et soutenus."},
+    {l:"E",t:"Soient totalement autonomes."}
+  ]},
+  {q:"Ton équipe est démotivée, tu :", o:[
+    {l:"A",t:"Réorganises les tâches de manière stricte."},
+    {l:"B",t:"Leur demandes leur avis sur ce qui pourrait améliorer la situation."},
+    {l:"C",t:"Lances une nouvelle vision pour les rallumer."},
+    {l:"D",t:"Prends soin de comprendre ce que chacun vit."},
+    {l:"E",t:"Attends que la motivation revienne d'elle-même."}
+  ]},
+  {q:"Ta manière idéale de prendre une décision est :", o:[
+    {l:"A",t:"Seul(e), rapidement."},
+    {l:"B",t:"En consultant les autres."},
+    {l:"C",t:"En fonction d'une grande vision ou mission."},
+    {l:"D",t:"En tenant compte des besoins humains."},
+    {l:"E",t:"En laissant les autres choisir librement."}
+  ]},
+  {q:"Ton style naturel de communication est :", o:[
+    {l:"A",t:"Direct et autoritaire."},
+    {l:"B",t:"Ouvert et collaboratif."},
+    {l:"C",t:"Inspirant et passionné."},
+    {l:"D",t:"Calme et rassurant."},
+    {l:"E",t:"Discret et réservé."}
+  ]},
+  {q:"Si tu devais diriger une campagne publicitaire, tu :", o:[
+    {l:"A",t:"Dirigerais chaque étape du projet, sans laisser place à l'imprévu."},
+    {l:"B",t:"Impliquerais toute ton équipe dans les choix créatifs."},
+    {l:"C",t:"Ferais rêver l'équipe avec une idée forte et mobilisatrice."},
+    {l:"D",t:"Veillerais à ce que chacun se sente valorisé et écouté."},
+    {l:"E",t:"Donnerais carte blanche à ton équipe pour qu'elle se débrouille."}
+  ]}
+];
+
+var STYLES = {
+  A:{name:"Autoritaire",      emoji:"⚡", color:"#6B3FA0", desc:"Tu diriges avec clarté et autorité. Efficace en urgence, avec des équipes inexpérimentées ou quand les délais sont serrés.", detail:"Fort en organisation et rapidité, mais pense à impliquer davantage ton équipe pour stimuler leur engagement."},
+  B:{name:"Démocratique",     emoji:"🤝", color:"#9B6DBF", desc:"Tu impliques ton équipe dans les décisions et favorises la discussion collective. Tu crées un climat de confiance.", detail:"Excellent pour la cohésion et la créativité. Attention aux décisions trop lentes en situation d'urgence."},
+  C:{name:"Visionnaire",      emoji:"🚀", color:"#FF8B6B", desc:"Tu inspires par ta vision et ta passion. Tu mobilises les équipes autour d'un idéal commun et stimules l'innovation.", detail:"Puissant pour transformer et motiver. Veille à ne pas perdre de vue les détails opérationnels quotidiens."},
+  D:{name:"Coach / Serviteur",emoji:"💜", color:"#3D1A6E", desc:"Tu mets l'équipe au centre. Tu écoutes, accompagnes et développes le potentiel de chacun avec empathie et humilité.", detail:"Excellent pour le développement des talents. Demande beaucoup d'énergie relationnelle."},
+  E:{name:"Laisser-faire",    emoji:"🌿", color:"#A8D8B9", desc:"Tu accordes une grande autonomie. Tu fais confiance aux compétences de chacun et interviens peu.", detail:"Idéal pour les équipes expérimentées et créatives. Assure-toi de rester disponible si besoin."}
+};
+
+// ── COMBOS profil croisé ─────────────────────────────────
+var COMBOS = {
+  "D-A":{paradox:"Tu compenses ton manque de confiance par le contrôle et les directives. C'est une réaction naturelle, mais les gens suivent parce qu'ils y sont obligés, pas parce qu'ils sont inspirés.", danger:"Court terme OK, long terme épuisant pour toi et démotivant pour l'équipe.", tips:["Commence à déléguer une petite décision par semaine","Demande l'avis de ton équipe avant de décider","Pratique le 'pourquoi' avant le 'comment'"]},
+  "D-B":{paradox:"Tu veux impliquer les autres mais tu manques encore de l'autorité pour structurer les échanges. Les discussions risquent de partir dans tous les sens.", danger:"Risque de confusion si personne ne prend les rênes.", tips:["Fixe un ordre du jour clair avant chaque réunion","Ose clore les débats et trancher","Développe ta confiance avant d'élargir la participation"]},
+  "D-C":{paradox:"Tu as de grandes idées et une belle vision, mais ton niveau actuel ne te permet pas encore de mobiliser les gens. La vision sans exécution reste un rêve.", danger:"Risque que l'équipe ne te suive pas vraiment.", tips:["Travaille d'abord ta crédibilité par de petits succès concrets","Apprends à planifier avant d'inspirer","Montre l'exemple avant de demander aux autres de se dépasser"]},
+  "D-D":{paradox:"Tu es naturellement empathique, mais tu manques encore de la confiance pour vraiment guider les autres. Tu risques de passer pour quelqu'un qui 'suit' plutôt que qui 'mène'.", danger:"Trop effacé(e) : l'équipe ne te voit pas comme un leader.", tips:["Commence à prendre position sur des sujets importants","Accepte que diriger, c'est parfois décider seul","Tes idées ont de la valeur — exprime-les !"]},
+  "D-E":{paradox:"Tu donnes beaucoup de liberté, mais sans vision ni autorité, l'équipe se retrouve sans cap. Le laisser-faire fonctionne seulement si le leader est déjà très fort.", danger:"Risque élevé de désorganisation et de perte de confiance.", tips:["Définis des objectifs clairs avant de laisser l'autonomie","Assure un suivi régulier même sans intervenir","Développe ta légitimité avant de déléguer entièrement"]},
+  "M-A":{paradox:"Tu compenses ton manque de confiance par le contrôle et les directives claires. C'est efficace à court terme, mais tu bloques ton propre développement en ne laissant pas l'équipe grandir.", danger:"Les gens te suivent parce qu'ils le doivent, pas parce qu'ils y croient.", tips:["Teste une décision participative par semaine","Pose des questions avant de donner des réponses","Observe ce qui se passe quand tu fais vraiment confiance"]},
+  "M-B":{paradox:"Tu as le bon réflexe d'impliquer l'équipe, et tu as du potentiel. Il te manque surtout la confiance pour assumer pleinement ton rôle de leader dans ces moments collectifs.", danger:"Tu facilites bien mais tu hésites à trancher quand il le faut.", tips:["Pratique à conclure chaque discussion par une décision claire","Prends la parole en premier dans les réunions","Rappelle-toi que le consensus permanent n'est pas toujours possible"]},
+  "M-C":{paradox:"Tu as la flamme et la vision, mais pas encore assez de structure pour la rendre crédible. Ton enthousiasme est un atout énorme — il te faut maintenant l'ancrer dans le réel.", danger:"Belle vision, mais difficulté à passer aux actes concrets.", tips:["Accompagne chaque grande idée d'un plan en 3 étapes concrètes","Montre des résultats tangibles pour bâtir ta crédibilité","Développe ta rigueur organisationnelle"]},
+  "M-D":{paradox:"Tu es à l'écoute, empathique, tu t'intéresses sincèrement aux autres. Il te faut maintenant oser affirmer tes idées avec autant de force que tu affirmes ton soutien.", danger:"Tu es apprécié(e) mais pas toujours suivi(e) comme leader.", tips:["Partage ton opinion même si tu n'es pas sûr(e)","Dis 'je pense que' plus souvent en réunion","L'empathie + la direction = leadership puissant"]},
+  "M-E":{paradox:"Tu fais confiance à ton équipe, c'est bien. Mais à ton stade, cette liberté peut être perçue comme un désintérêt plutôt que comme de la confiance.", danger:"L'équipe ne sait pas si tu es là pour elle ou pas.", tips:["Sois plus présent(e) : check-ins réguliers sans microgérer","Pose des jalons clairs même si tu laisses de la liberté","Affirme ta présence avant de te retirer"]},
+  "A-A":{paradox:"Tu es un leader reconnu avec un style directif maîtrisé. À ce stade, ce style peut commencer à freiner la créativité et l'autonomie des membres plus compétents.", danger:"Risque de plafonner si tu ne laisses pas plus de place.", tips:["Consulte avant de décider dans les situations complexes","Identifie 2-3 personnes à qui tu peux déléguer plus","Expérimente le style démocratique dans des contextes à faible risque"]},
+  "A-B":{paradox:"Excellente combinaison ! Tu as le niveau de leadership pour porter une approche participative sans perdre de vue les objectifs. Tu es probablement très apprécié(e) de ton équipe.", danger:"Parfois trop long à décider — apprends à trancher plus vite.", tips:["Fixe des délais pour tes processus de consultation","Pratique la décision rapide dans les urgences","Développe ta vision à long terme pour passer au niveau suivant"]},
+  "A-C":{paradox:"Tu as la crédibilité ET la vision. C'est le combo idéal pour faire passer ton équipe à un niveau supérieur. Continue à développer ta capacité à inspirer.", danger:"Peut manquer de structure opérationnelle au quotidien.", tips:["Assure-toi que ta vision se traduit en tâches concrètes","Développe quelqu'un pour gérer l'opérationnel","Perfectionne ton art de la communication inspirante"]},
+  "A-D":{paradox:"Tu combines leadership affirmé et attention aux personnes — c'est une recette très puissante pour créer des équipes engagées et loyales.", danger:"Risque de trop protéger l'équipe au détriment de la performance.", tips:["Ose challenger ton équipe davantage","Donne du feedback exigeant, pas seulement bienveillant","Travaille ta vision long terme pour atteindre le niveau fort"]},
+  "A-E":{paradox:"Tu fais confiance à des gens compétents et ça fonctionne parce que tu as la légitimité pour le faire. Un leader affirmé reste cependant visible.", danger:"L'équipe peut se demander où tu es quand ça va mal.", tips:["Planifie des moments de présence régulière","Interviens rapidement dès les premiers signaux de dérive","Développe ta capacité à inspirer pour atteindre le niveau fort"]},
+  "F-A":{paradox:"Ton niveau est élevé mais ton style directif peut créer de la frustration chez des gens compétents. Les grands leaders savent quand contrôler et quand libérer.", danger:"Tu risques d'étouffer les talents forts de ton équipe.", tips:["Directif avec les novices, libérateur avec les experts","Pratique le leadership situationnel consciemment","Est-ce que tu contrôles par nécessité ou par habitude ?"]},
+  "F-B":{paradox:"Excellent profil ! Tu combines un haut niveau de leadership avec une approche inclusive. Tu génères probablement beaucoup de confiance et d'engagement.", danger:"Peut être trop consensuel dans les situations qui nécessitent une décision rapide.", tips:["Développe ton aisance avec les décisions solitaires","Varie consciemment ton style selon le contexte","Mentorise d'autres leaders en devenir"]},
+  "F-C":{paradox:"C'est le profil des grands transformateurs — vision puissante + niveau fort = capacité à changer vraiment les choses. Tu inspires et tu livres.", danger:"Risque de burn-out si tu portes seul(e) la vision.", tips:["Construis une équipe de leadership autour de toi","Documente et partage ta vision","Prends soin de toi autant que tu prends soin des autres"]},
+  "F-D":{paradox:"Leader fort avec un coeur de serviteur — c'est extrêmement rare et précieux. Tu inspires par ce que tu es autant que par ce que tu fais.", danger:"Peut être perçu comme trop doux dans les crises.", tips:["Sois explicite sur ta vision et tes attentes","Développe ta capacité à prendre des décisions difficiles rapidement","Partage ton approche — tu peux former les autres à ce style"]},
+  "F-E":{paradox:"Tu laisses une grande liberté parce que tu as la confiance et la légitimité pour le faire. Ton équipe sait que tu es là si besoin. C'est du leadership mature.", danger:"Risque d'être trop absent si l'équipe traverse une période difficile.", tips:["Maintiens des signaux de présence réguliers","Interviens fermement si les jalons ne sont pas respectés","Comment formes-tu les prochains leaders ?"]},
+};
+
+var QUESTIONS = {"D":"Est-ce que tu te vois vraiment comme un leader ? Qu'est-ce qui t'empêche de prendre plus de place ?","M":"Est-ce que ton équipe te suit parce qu'elle croit en toi, ou parce que tu lui dis quoi faire ?","A":"As-tu un leader que tu formes pour te succéder un jour ?","F":"Quel impact veux-tu laisser — et est-ce que ton équipe le sait ?"};
+var PROG_ROWS = [{key:"D",niveau:"En développement",style_prob:"Laisser-faire ou autoritaire",what:"Il fuit ou contrôle par réflexe"},{key:"M",niveau:"Modéré",style_prob:"Autoritaire ou démocratique",what:"Il cherche sa voie"},{key:"A",niveau:"Affirmé",style_prob:"Démocratique ou visionnaire",what:"Il commence à inspirer"},{key:"F",niveau:"Fort",style_prob:"Visionnaire ou coach",what:"Il libère le potentiel des autres"}];
+
+// ── STATE ────────────────────────────────────────────────
+var a1 = new Array(15).fill(null);
+var a2 = new Array(10).fill(null);
+var savedPct = null;
+var savedStyle = null;
+
+// ── RENDER Q1 ────────────────────────────────────────────
+function renderQ1() {
+  var html = '';
+  for (var i = 0; i < Q1.length; i++) {
+    var q = Q1[i];
+    html += '<div class="qcard"><div class="qhead"><div class="qnum">' + (i+1) + '</div><div class="qtext">' + q.q + '</div></div><div class="scale-opts">';
+    var emojis = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣'];
+    for (var j = 0; j < q.o.length; j++) {
+      var sel = (a1[i] === j+1) ? ' sel' : '';
+      html += '<div class="sopt' + sel + '" onclick="pickQ1(' + i + ',' + (j+1) + ')">';
+      html += '<div style="font-size:1.1rem;margin-bottom:.15rem">' + emojis[j] + '</div>' + q.o[j] + '</div>';
+    }
+    html += '</div></div>';
+  }
+  document.getElementById('q1container').innerHTML = html;
+}
+
+function pickQ1(qi, val) {
+  a1[qi] = val;
+  renderQ1();
+  var answered = a1.filter(function(x){return x!==null;}).length;
+  var pct = Math.round(answered/15*100);
+  document.getElementById('p1txt').textContent = answered + ' / 15 réponses';
+  document.getElementById('p1pct').textContent = pct + '%';
+  document.getElementById('p1bar').style.width = pct + '%';
+}
+
+function submitQ1() {
+  var unanswered = a1.filter(function(x){return x===null;}).length;
+  if (unanswered > 0) {
+    var w = document.getElementById('w1');
+    w.textContent = '⚠️ Il te reste ' + unanswered + ' question(s) sans réponse.';
+    w.classList.add('show');
+    return;
+  }
+  document.getElementById('w1').classList.remove('show');
+  var total = a1.reduce(function(a,b){return a+b;}, 0);
+  var pct = Math.round(total/75*100);
+  savedPct = pct;
+  var deg = Math.round(pct/100*360);
+  document.getElementById('ring1').style.background = 'conic-gradient(var(--peach) ' + deg + 'deg, #ede8f8 ' + deg + 'deg)';
+  document.getElementById('rpct').textContent = pct + '%';
+  document.getElementById('rraw').textContent = 'Score : ' + total + ' / 75 points';
+  var lv = LEVELS[0];
+  for (var i = 0; i < LEVELS.length; i++) { if (pct <= LEVELS[i].max) { lv = LEVELS[i]; break; } }
+  document.getElementById('rtitle').textContent = lv.emoji + ' ' + lv.title;
+  document.getElementById('rdesc').textContent = lv.desc;
+  var lvhtml = '';
+  for (var i = 0; i < LEVELS.length; i++) {
+    var l = LEVELS[i];
+    var isActive = (pct <= l.max && (i===0 || pct > LEVELS[i-1].max));
+    var bg = isActive ? l.color : '#fff';
+    var tc = isActive ? '#fff' : '#3D1A6E';
+    var dc = isActive ? 'rgba(255,255,255,.85)' : '#A094B8';
+    var rc = isActive ? 'rgba(255,255,255,.65)' : '#A094B8';
+    var scale = isActive ? 'transform:scale(1.02);' : '';
+    var border = isActive ? 'border-color:transparent;box-shadow:0 6px 22px rgba(61,26,110,.22);' : '';
+    var tag = isActive ? '<span class="mine-tag">← Ton résultat</span>' : '';
+    lvhtml += '<div class="lvl-card' + (isActive?' active-lvl':'') + '" style="background:' + bg + ';' + border + scale + '">';
+    lvhtml += '<div class="lvl-icon"><div class="lvl-emoji">' + l.emoji + '</div><div class="lvl-range" style="color:' + rc + '">' + l.range + '</div></div>';
+    lvhtml += '<div><div class="lvl-title" style="color:' + tc + '">' + l.title + tag + '</div>';
+    lvhtml += '<div class="lvl-desc" style="color:' + dc + '">' + l.desc + '</div></div></div>';
+  }
+  document.getElementById('lvlgrid').innerHTML = lvhtml;
+  document.getElementById('r1').classList.add('show');
+  checkUnlock();
+  document.getElementById('r1').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function resetQ1() {
+  a1 = new Array(15).fill(null);
+  savedPct = null;
+  renderQ1();
+  document.getElementById('p1txt').textContent = '0 / 15 réponses';
+  document.getElementById('p1pct').textContent = '0%';
+  document.getElementById('p1bar').style.width = '0%';
+  document.getElementById('r1').classList.remove('show');
+  document.getElementById('w1').classList.remove('show');
+  document.getElementById('tab3').disabled = true;
+  document.getElementById('tab3').style.opacity = '.4';
+  document.getElementById('tab3').textContent = '🔍 Mon profil complet';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── RENDER Q2 ────────────────────────────────────────────
+function renderQ2() {
+  var html = '';
+  for (var i = 0; i < Q2.length; i++) {
+    var q = Q2[i];
+    html += '<div class="qcard"><div class="qhead"><div class="qnum">' + (i+1) + '</div><div class="qtext">' + q.q + '</div></div><div class="letter-opts">';
+    for (var j = 0; j < q.o.length; j++) {
+      var opt = q.o[j];
+      var sel = (a2[i] === opt.l) ? ' sel' : '';
+      html += '<div class="lopt' + sel + '" onclick="pickQ2(' + i + ',\'' + opt.l + '\')">';
+      html += '<div class="lbadge">' + opt.l + '</div><div class="ltext">' + opt.t + '</div></div>';
+    }
+    html += '</div></div>';
+  }
+  document.getElementById('q2container').innerHTML = html;
+}
+
+function pickQ2(qi, letter) {
+  a2[qi] = letter;
+  renderQ2();
+  var answered = a2.filter(function(x){return x!==null;}).length;
+  var pct = Math.round(answered/10*100);
+  document.getElementById('p2txt').textContent = answered + ' / 10 réponses';
+  document.getElementById('p2pct').textContent = pct + '%';
+  document.getElementById('p2bar').style.width = pct + '%';
+}
+
+function submitQ2() {
+  var unanswered = a2.filter(function(x){return x===null;}).length;
+  if (unanswered > 0) {
+    var w = document.getElementById('w2');
+    w.textContent = '⚠️ Il te reste ' + unanswered + ' question(s) sans réponse.';
+    w.classList.add('show');
+    return;
+  }
+  document.getElementById('w2').classList.remove('show');
+  var counts = {A:0,B:0,C:0,D:0,E:0};
+  for (var i = 0; i < a2.length; i++) counts[a2[i]]++;
+  var winner = 'A', max = 0;
+  for (var k in counts) { if (counts[k] > max) { max = counts[k]; winner = k; } }
+  savedStyle = winner;
+  var st = STYLES[winner];
+  document.getElementById('swbadge').textContent = st.emoji + ' Style dominant';
+  document.getElementById('swtitle').textContent = st.name;
+  document.getElementById('swdesc').textContent = st.desc;
+  var bhtml = '<h4 style="color:var(--plum);font-family:\'Playfair Display\',serif;font-size:1.05rem;margin-bottom:.8rem;">Répartition de tes réponses</h4>';
+  var letters = ['A','B','C','D','E'];
+  for (var i = 0; i < letters.length; i++) {
+    var l = letters[i]; var s = STYLES[l];
+    var p = Math.round(counts[l]/10*100);
+    bhtml += '<div class="bar-row"><div class="bar-lbl"><span>' + s.emoji + ' ' + s.name + '</span><span style="font-weight:400;color:var(--muted)">' + counts[l] + '/10</span></div>';
+    bhtml += '<div class="bar-track"><div class="bar-fill" style="background:' + s.color + '" data-w="' + p + '"></div></div></div>';
+  }
+  document.getElementById('sbars').innerHTML = bhtml;
+  var dhtml = '';
+  for (var i = 0; i < letters.length; i++) {
+    var l = letters[i]; var s = STYLES[l];
+    dhtml += '<div class="sdesc-card"><div class="sdesc-head"><div class="sdesc-dot" style="background:' + s.color + '"></div><div class="sdesc-title">' + s.emoji + ' ' + s.name + '</div></div>';
+    dhtml += '<div class="sdesc-body">' + s.detail + '</div></div>';
+  }
+  document.getElementById('sdescgrid').innerHTML = dhtml;
+  document.getElementById('r2').classList.add('show');
+  checkUnlock();
+  setTimeout(function(){
+    var fills = document.querySelectorAll('.bar-fill');
+    for (var i = 0; i < fills.length; i++) fills[i].style.width = fills[i].getAttribute('data-w') + '%';
+  }, 80);
+  document.getElementById('r2').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function resetQ2() {
+  a2 = new Array(10).fill(null);
+  savedStyle = null;
+  renderQ2();
+  document.getElementById('p2txt').textContent = '0 / 10 réponses';
+  document.getElementById('p2pct').textContent = '0%';
+  document.getElementById('p2bar').style.width = '0%';
+  document.getElementById('r2').classList.remove('show');
+  document.getElementById('w2').classList.remove('show');
+  document.getElementById('tab3').disabled = true;
+  document.getElementById('tab3').style.opacity = '.4';
+  document.getElementById('tab3').textContent = '🔍 Mon profil complet';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── UNLOCK + BUILD PROFIL ────────────────────────────────
+function checkUnlock() {
+  if (savedPct !== null && savedStyle !== null) {
+    var btn = document.getElementById('tab3');
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.background = 'linear-gradient(135deg,var(--peach),#ff6b3d)';
+    btn.style.color = '#fff';
+    btn.style.borderColor = 'var(--peach)';
+    btn.textContent = '🔍 Mon profil complet ✨';
+    buildProfil();
+  }
+}
+
+function getNiveauKey(pct) {
+  if (pct <= 40) return 'D';
+  if (pct <= 65) return 'M';
+  if (pct <= 85) return 'A';
+  return 'F';
+}
+
+var NIVEAU_LABELS = {D:"Leadership en développement 🌱", M:"Leadership modéré 🌿", A:"Leader affirmé 🌟", F:"Leader fort 🚀"};
+
+function buildProfil() {
+  var nk = getNiveauKey(savedPct);
+  var sk = savedStyle;
+  var combo = COMBOS[nk + '-' + sk] || COMBOS['M-A'];
+  var si = STYLES[sk];
+  var nl = NIVEAU_LABELS[nk];
+
+  var html = '';
+
+  // Duo badges
+  html += '<div class="profil-duo">';
+  html += '<div class="pbadge" style="background:linear-gradient(135deg,var(--plum),var(--violet))">';
+  html += '<div class="pbadge-emoji">📊</div><div class="pbadge-lbl">Niveau de leadership</div>';
+  html += '<div class="pbadge-val">' + nl + '</div>';
+  html += '<div class="pbadge-sub">' + savedPct + '% — Score Quiz 1</div></div>';
+  html += '<div class="pbadge" style="background:linear-gradient(135deg,' + si.color + ',var(--lila))">';
+  html += '<div class="pbadge-emoji">' + si.emoji + '</div><div class="pbadge-lbl">Style de leadership</div>';
+  html += '<div class="pbadge-val">' + si.name + '</div>';
+  html += '<div class="pbadge-sub">Style dominant — Quiz 2</div></div></div>';
+
+  // Ce que ça révèle
+  html += '<div class="pbox"><h3>🔍 Ce que cette combinaison révèle</h3>';
+  html += '<p>' + combo.paradox + '</p>';
+  html += '<div class="hquote">' + si.desc + '</div>';
+  if (combo.danger) html += '<p class="danger-note">⚠️ Point de vigilance : ' + combo.danger + '</p>';
+  html += '</div>';
+
+  // Question puissante
+  html += '<div class="pquestion"><div class="pq-lbl">💬 La question à te poser</div>';
+  html += '<div class="pq-txt">' + QUESTIONS[nk] + '</div></div>';
+
+  // Tips
+  html += '<div class="pbox"><h3>🚀 Tes 3 pistes de développement</h3><div class="tips-list">';
+  for (var i = 0; i < combo.tips.length; i++) {
+    html += '<div class="tip"><div class="tip-n">' + (i+1) + '</div><div class="tip-t">' + combo.tips[i] + '</div></div>';
+  }
+  html += '</div></div>';
+
+  // Tableau progression
+  html += '<div class="pbox"><h3>📈 La progression naturelle du leadership</h3>';
+  html += '<p style="font-size:.85rem;color:var(--muted);margin-bottom:.6rem;">Vois où tu te situes et vers quoi tu peux tendre.</p>';
+  html += '<table class="ptable"><thead><tr><th>Niveau</th><th>Style naturel probable</th><th>Ce qui se passe</th></tr></thead><tbody>';
+  for (var i = 0; i < PROG_ROWS.length; i++) {
+    var row = PROG_ROWS[i];
+    var isMine = (row.key === nk);
+    html += '<tr' + (isMine ? ' class="arow"' : '') + '>';
+    html += '<td>' + NIVEAU_LABELS[row.key] + (isMine ? '<span class="mine-pill">← Toi</span>' : '') + '</td>';
+    html += '<td>' + row.style_prob + '</td><td>' + row.what + '</td></tr>';
+  }
+  html += '</tbody></table></div>';
+
+  // Footer
+  html += '<div class="pfooter">';
+  html += '<div style="font-size:1.6rem;margin-bottom:.4rem">💜</div>';
+  html += '<h3 style="font-family:\'Playfair Display\',serif;font-size:1.1rem;margin-bottom:.5rem">À retenir</h3>';
+  html += '<p style="opacity:.88;line-height:1.7;font-size:.93rem">Le leadership est une compétence qui se développe. Ta combinaison <strong>' + nl.replace(/\s*[^\w\s].*/,'').trim() + ' + ' + si.name + '</strong> est un point de départ, pas une limite.</p>';
+  html += '<div class="btns"><button class="btn-ghost" onclick="switchTab(1)">↺ Refaire Quiz 1</button><button class="btn-ghost" onclick="switchTab(2)">↺ Refaire Quiz 2</button></div></div>';
+
+  document.getElementById('profilcontent').innerHTML = html;
+}
+
+// ── TAB SWITCH ───────────────────────────────────────────
+function switchTab(n) {
+  var panels = document.querySelectorAll('.panel');
+  for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
+  var btns = document.querySelectorAll('.tab-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.remove('active');
+    if (i !== 2) { btns[i].style.background=''; btns[i].style.color=''; btns[i].style.borderColor=''; }
+  }
+  document.getElementById('panel' + n).classList.add('active');
+  btns[n-1].classList.add('active');
+  if (n === 3) { btns[2].style.background=''; btns[2].style.color=''; btns[2].style.borderColor=''; }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── INIT ─────────────────────────────────────────────────
+renderQ1();
+renderQ2();
+</script>
+</body>
+</html>
